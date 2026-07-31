@@ -12,7 +12,11 @@ This part is aimed at practicing Basic Python functional and fundamental problem
 
 ## Problems Solved
 
-not yet
+- Two Sum
+
+- Valid Anagram
+
+- Valid Palindrome
 
 ## Library Managment System
 
