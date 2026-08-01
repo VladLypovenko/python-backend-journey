@@ -18,6 +18,14 @@ This part is aimed at practicing Basic Python functional and fundamental problem
 
 - Valid Palindrome
 
+- Contains Duplicate
+
+- Majority Element
+
+- Move Zeroes
+
+- Best Time to Buy and Sell Stock
+
 ## Library Managment System
 
 not yet
