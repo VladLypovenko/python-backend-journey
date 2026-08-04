@@ -28,6 +28,8 @@ This part is aimed at practicing Basic Python functional and fundamental problem
 
 ## Library Managment System
 
-not yet
+- A simple Object-Oriented Python project that simulates a library management system. It allows users to manage books, register members, borrow and return books while enforcing library business rules.
 
 ## What I`ve Learned
+
+
