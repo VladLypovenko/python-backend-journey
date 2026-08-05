@@ -18,11 +18,10 @@ class Library:
 
     def __str__(self):
 
-        members = ", ".join(self.members)
+        books = "\n".join(str(book) for book in self.books.values())
+        members = "\n".join(str(member) for member in self.members.values())
 
-        books = ", ".join(self.books)
-
-        return f'Books: {self.books} \nMembers: {members}'
+        return f'Books: {books} \nMembers: {members}'
 
     def add_book(self, book: Book):
         if book.isbn not in self.books.keys():
@@ -38,21 +37,22 @@ class Library:
             raise ItemNotFoundError("Item not found")
 
         if book.is_available:
-            return self.books.pop(book.isbn, None)
+            return self.books.pop(book.isbn)
 
         else:
             raise ValueError("Item is not available")
 
     def register_member(self, member: Member):
-        if member in self.members.keys():
+        if member.member_id in self.members.keys():
             raise ItemAlreadyExistsError("Member already registered")
         self.members[member.member_id] = member
         return None
 
     def find_book(self, isbn):
-        return self.books.get(isbn)
+        book = self.books.get(isbn)
+        return book
 
-    def search_books(self, title = None, author = None):
+    def search_books(self, title:str = None, author = None):
         results = []
         title = title.lower() if title else None
         author = author.lower() if author else None
@@ -71,11 +71,11 @@ class Library:
 
         return results
 
-    def found_member(self, member_id):
+    def find_member(self, member_id):
         return self.members.get(member_id)
 
     def borrow_book(self, member_id, isbn):
-        member = self.found_member(member_id)
+        member = self.find_member(member_id)
 
         if not member:
             raise ItemNotFoundError("Item not found")
@@ -94,7 +94,7 @@ class Library:
         return None
 
     def return_book(self, member_id, isbn):
-        member = self.found_member(member_id)
+        member = self.find_member(member_id)
 
         if not member:
             raise ItemNotFoundError("Item not found")
@@ -109,7 +109,6 @@ class Library:
         book.is_available = True
 
         return None
-
 
 
 

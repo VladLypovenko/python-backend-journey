@@ -3,114 +3,219 @@ from member import Member
 from library import Library
 from exceptions import *
 
-# -------------------------
-# Create books
-# -------------------------
+working = True
 
-book1 = Book("Harry Potter", "J. K. Rowling", "1")
-book2 = Book("The Housemaid", "Freida McFadden", "2")
-book3 = Book("Clean Code", "Robert C. Martin", "3")
-book4 = Book("Python Crash Course", "Eric Matthes", "4")
-
-# Duplicate ISBN
-duplicate_book = Book("Another Book", "Someone", "1")
-
-# -------------------------
-# Create members
-# -------------------------
-
-member1 = Member("Vlad", "1211")
-member2 = Member("Ivan", "1212")
-
-duplicate_member = Member("Alex", "1211")
-
-# -------------------------
-# Create library
-# -------------------------
+menu = {
+    "1": "Add a Book",
+    "2": "Add a Member",
+    "3": "Borrow a Book",
+    "4": "Return the Book to Library",
+    "5": "Delete a Book",
+    "6": "Search for a Book",
+    "7": "Show all Books",
+    "8": "Borrowed Books",
+    "0": "Exit"
+}
 
 library = Library()
 
-print("\n=== ADD BOOKS ===")
-library.add_book(book1)
-library.add_book(book2)
-library.add_book(book3)
-library.add_book(book4)
+def add_book():
+    while True:
+        print("Please enter the ISBN of the book: ")
+        isbn = input()
+        try:
+            isbn = int(isbn)
+            break
+        except ValueError:
+            continue
 
-print("\nDuplicate ISBN:")
-try:
-    library.add_book(duplicate_book)
-except DuplicateError as e:
-    print(e)
+    while True:
+        print("Please enter the Title of the book: ")
+        title = input()
 
-print("\n=== REGISTER MEMBERS ===")
-library.register_member(member1)
-library.register_member(member2)
+        if len(title) == 0:
+            continue
+        else:
+            break
 
-print("\nDuplicate Member ID:")
-library.register_member(duplicate_member)
+    while True:
+        print("Please enter the Author of the book: ")
+        author = input()
 
-print("\n=== FIND BOOK ===")
-print(library.find_book("1"))
+        if len(author) == 0:
+            continue
+        else:
+            break
 
-print("\nFind non-existing book:")
-print(library.find_book("999"))
+    title = input().strip()
+    author = input().strip()
 
-print("\n=== SEARCH BOOKS ===")
-print(library.search_books(title="Harry"))
-print(library.search_books(author="Martin"))
+    new_book = Book(isbn, title, author)
 
-print("\n=== BORROW BOOK ===")
-print(library.borrow_book(member1.member_id, book1.isbn))
+    try:
+        library.add_book(new_book)
 
-print("\nBorrow the same book again:")
-try:
-    print(library.borrow_book(member1.member_id, book1.isbn))
-except ValueError as e:
-    print(e)
+    except DuplicateError as e:
+        print(e)
 
-print("\n=== BORROW LIMIT ===")
-library.borrow_book(member1.member_id, book2.isbn)
-library.borrow_book(member1.member_id, book3.isbn)
+def add_member():
+    while True:
+        print("Please enter a name of Member: ")
+        name = input()
+        if len(name) == 0:
+            continue
+        else:
+            break
 
-print("Try to borrow the fourth book:")
-try:
-    print(library.borrow_book(member1.member_id, book4.isbn))
-except ValueError as e:
-    print(e)
+    while True:
+        print("Please enter the member_id of the member: ")
+        member_id = input()
+        try:
+            member_id = int(member_id)
+            break
+        except ValueError:
+            continue
 
-print("\nCurrent borrowed books:")
-for book in member1.borrowed_books:
-    print(book)
+    new_member = Member(name,member_id)
 
-print("\n=== RETURN BOOK ===")
-print(library.return_book(member1.member_id, book1.isbn))
+    try:
+        library.register_member(new_member)
+    except ItemAlreadyExistsError as e:
+        print(e)
 
-print("\nBorrowed books after return:")
-for book in member1.borrowed_books:
-    print(book)
+def borrow_book():
+    while True:
+        print("Please enter your Member Id: ")
+        member_id = input()
+        if len(member_id) != 0:
+            try:
+                member_id = int(member_id)
+                break
+            except ValueError:
+                continue
+        else:
+            continue
 
-print("\nReturn someone else's book:")
-try:
-    print(library.return_book(member1.member_id, book1.isbn))
-except ItemNotFoundError as e:
-    print(e)
+    while True:
+        print("Please enter the ISBN of the book: ")
+        isbn = input()
+        try:
+            isbn = int(isbn)
+            break
+        except ValueError:
+            continue
 
-print("\n=== REMOVE BOOK ===")
+    try:
+        library.borrow_book(member_id, isbn)
+    except (ItemNotFoundError, ValueError) as e:
+        print(e)
 
-print("Try to remove borrowed book:")
-try:
-    library.remove_book(book1.isbn)
-except ItemNotFoundError or ValueError or TypeError as e:
-    print(e)
+def return_book():
+    while True:
+        print("Please enter your Member Id: ")
+        member_id = input()
+        if len(member_id) != 0:
+            try:
+                member_id = int(member_id)
+                break
+            except ValueError:
+                continue
+        else:
+            continue
 
-print("Return it first:")
-try:
-    print(library.return_book(member1.member_id, book2.isbn))
-except ItemNotFoundError as e:
-    print(e)
+    while True:
+        print("Please enter the ISBN of the book: ")
+        isbn = input()
+        try:
+            isbn = int(isbn)
+            break
+        except ValueError:
+            continue
 
-print("Remove again:")
-print(library.remove_book(book2.isbn))
+    try:
+        library.return_book(member_id,isbn)
+    except (ItemNotFoundError, ValueError) as e:
+        print(e)
 
-print("\n=== SEARCH MISSING BOOK ===")
-print(library.search_books(title="Lord of the Rings"))
+def delete_book():
+    while True:
+        print("Please enter the ISBN of the book: ")
+        isbn = input()
+        try:
+            isbn = int(isbn)
+            break
+        except ValueError:
+            continue
+
+    try:
+        library.remove_book(isbn)
+    except (ItemNotFoundError, ValueError) as e:
+        print(e)
+
+def search_book():
+    print("Please enter the Title of the book: ")
+    title = input()
+
+    print("Please enter the Author of the book: ")
+    author = input()
+
+    result = library.search_books(title, author)
+
+    if not result:
+        print("Book not found")
+        return False
+
+    for book in result:
+        print(book)
+    return True
+
+def show_all_books():
+    for book in library.books.values():
+        print(book)
+
+def show_available_books():
+    result = [book for book in library.books.values() if book.is_available]
+
+    if not result:
+        print("No books available")
+        return
+
+    for book in result:
+        print(book)
+
+
+while working:
+    for keys, values in menu.items():
+        print(f"{keys}. {values}")
+
+    print("Please enter an action with number: ")
+
+    action = input()
+
+    if action == "1":
+        add_book()
+
+    elif action == "2":
+        add_member()
+
+    elif action == "3":
+        borrow_book()
+
+    elif action == "4":
+        return_book()
+
+    elif action == "5":
+        delete_book()
+
+    elif action == "6":
+        search_book()
+
+    elif action == "7":
+        show_all_books()
+
+    elif action == "8":
+        show_available_books()
+
+    elif action == "0":
+        print("Goodbye!")
+        working = False
