@@ -32,4 +32,22 @@ This part is aimed at practicing Basic Python functional and fundamental problem
 
 ## What I`ve Learned
 
+- Object-Oriented Programming (OOP)
+- Designing classes and managing relationships between objects
+- Working with dictionaries for efficient data storage
+- Custom exceptions and exception handling
+- Searching and filtering data
+- Building a menu-driven console application
+- Separating code into multiple modules
+- Using list comprehensions
+- Input validation and user interaction
 
+## Features
+
+- Add and remove books
+- Register library members
+- Borrow and return books
+- Search books by title or author
+- Display available and borrowed books
+- Prevent duplicate books and members
+- Handle invalid operations with custom exceptions
