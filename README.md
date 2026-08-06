@@ -23,7 +23,8 @@ Python fundamentals, problem solving, collections, functions, and a small
 Library Management System.
 
 ### 02 — OOP
-Coming soon.
+First full-fledged simple OOP project.
+InventoryService
 
 ### 03 — SQL & Databases
 Coming soon.
@@ -38,4 +39,4 @@ Coming soon.
 
 ## Progress
 
-Currently working on: **01 — Python Core**
+Currently working on: **02 - OOP**
