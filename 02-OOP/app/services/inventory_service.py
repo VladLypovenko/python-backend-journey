@@ -35,6 +35,10 @@ class InventoryService:
     def search_product(self, name: str):
         return [product for product in self.inventory.Products.values() if name.lower() in product.name.lower()]
 
+    def get_all_products(self):
+        products = {product.p_id: product
+                    for product in self.inventory.Products.values()}
+        return products
 
 
 
@@ -50,6 +54,12 @@ class InventoryService:
 
         self.inventory.remove_category(c_id)
 
+    def get_all_categories(self):
+        categories = {
+            category.c_id: category
+            for category in self.inventory.Categories.values()
+        }
+        return categories
 
 
 
@@ -66,6 +76,13 @@ class InventoryService:
             raise SupplierNotFoundError(f"Supplier with {s_id} not found")
 
         self.inventory.remove_supplier(s_id)
+
+    def get_all_suppliers(self):
+        supplier = {supplier.s_id: supplier
+                    for supplier in self.inventory.Suppliers.values()}
+        return supplier
+
+
 
 
 
