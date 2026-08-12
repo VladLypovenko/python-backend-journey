@@ -16,17 +16,17 @@ class Inventory:
         self.Products.pop(p_id)
 
     def get_product(self, p_id: int):
-        return self.Products[p_id]
+        return self.Products.get(p_id)
 
 
     def add_category(self, category: Category):
         self.Categories[category.c_id] = category
 
     def remove_category(self, c_id: int):
-        self.Products.pop(c_id)
+        self.Categories.pop(c_id)
 
     def get_category(self, c_id: int):
-        return self.Products[c_id]
+        return self.Categories.get(c_id)
 
 
     def add_supplier(self, supplier: Supplier):
@@ -36,4 +36,4 @@ class Inventory:
         self.Suppliers.pop(s_id)
 
     def get_supplier(self, s_id: int):
-        return self.Suppliers[s_id]
+        return self.Suppliers.get(s_id)

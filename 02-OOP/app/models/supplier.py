@@ -8,3 +8,9 @@ class Supplier:
         self.company_name = company_name
         self.email = email
         self.phone = phone
+
+    def __str__(self):
+        return f"""Name:{self.company_name}
+Email:{self.email}
+Phone:{self.phone}
+    """

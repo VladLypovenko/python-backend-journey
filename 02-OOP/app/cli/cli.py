@@ -1,3 +1,4 @@
+from app.exceptions.exceptions import InsufficientStockError, ProductNotFoundError
 from app.models.category import Category
 from app.models.product import Product
 from app.models.supplier import Supplier
@@ -105,7 +106,7 @@ def add_product():
 
     while True:
         curr_supplier = None
-        print("Choose a category or add a new one: ")
+        print("Choose a supplier or add a new one: ")
 
         for supplier in suppliers.values():
             print(f"{supplier.s_id}: {supplier.company_name}")
@@ -143,11 +144,16 @@ def add_product():
 
     new_product = Product(name, price, description, quantity, curr_category, curr_supplier)
     inventory_service.add_product(new_product)
+    print("Product Added Successfully")
 
 
 
 def update_product():
     products = inventory_service.get_all_products()
+
+    if not products:
+        print("No products available.")
+        return
 
     product = None
 
@@ -290,44 +296,250 @@ def update_product():
 
 
 def delete_product():
-    ...
+    products = inventory_service.get_all_products()
+
+    if not products:
+        print("No products available.")
+        return
+
+    product = None
+
+    print("Which product do you want to delete?")
+
+    for product in products.values():
+        print(f"{product.p_id}: {product.name}")
+
+    while True:
+        try:
+            choice = int(input("Product ID: "))
+        except ValueError:
+            print("Please enter a valid ID.")
+            continue
+
+        product = products.get(choice)
+
+        if product is None:
+            print("Invalid product ID.")
+            continue
+
+        break
+
+    inventory_service.remove_product(product.p_id)
+    print("Product deleted successfully.")
+
+
 
 
 def add_category():
-    ...
+    while True:
+        new_category = input("Enter a new category name: ")
+        try:
+            validate_name(new_category)
+        except ValueError as e:
+            print(e)
+            continue
+
+        break
+
+    new_category = Category(new_category)
+
+    inventory_service.add_category(new_category)
+
 
 
 def add_supplier():
-    ...
+    while True:
+        new_supplier_email = None
+
+        new_supplier_phone = None
+
+        new_supplier_name = input("Enter a new supplier name: ")
+        if len(new_supplier_name) == 0:
+            print("Please enter a valid supplier name.")
+            continue
+
+        new_supplier_email = input("Enter a new supplier email: ")
+
+        new_supplier_phone = input("Enter a new supplier phone: ")
+
+        break
+
+    new_supplier = Supplier(new_supplier_name, new_supplier_email, new_supplier_phone)
+    inventory_service.add_supplier(new_supplier)
+
 
 
 def restock_product():
-    ...
+    products = inventory_service.get_all_products()
 
+    if not products:
+        print("No products available.")
+        return
+
+    product = None
+
+    print("Which product do you want to restock?")
+
+    for product in products.values():
+        print(f"{product.p_id}: {product.name}")
+
+    while True:
+        try:
+            choice = int(input("Product ID: "))
+        except ValueError:
+            print("Please enter a valid ID.")
+            continue
+
+        product = products.get(choice)
+
+        if product is None:
+            print("Invalid product ID.")
+            continue
+
+        break
+
+    while True:
+        try:
+            amount = int(input("Amount: "))
+            validate_positive_int(amount)
+
+            inventory_service.restock_product(product.p_id, amount)
+            break
+
+        except ValueError as e:
+            print(e)
+    print("Product restocked successfully.")
 
 def sell_product():
-    ...
+    products = inventory_service.get_all_products()
+
+    if not products:
+        print("No products available.")
+        return
+
+    product = None
+
+    print("Which product do you want to sell?")
+
+    for product in products.values():
+        print(f"{product.p_id}: {product.name}")
+
+    while True:
+        try:
+            choice = int(input("Product ID: "))
+        except ValueError:
+            print("Please enter a valid ID.")
+            continue
+
+        product = products.get(choice)
+
+        if product is None:
+            print("Invalid product ID.")
+            continue
+
+        break
+
+    while True:
+        try:
+            amount = int(input("Amount: "))
+            validate_positive_int(amount)
+
+            inventory_service.sell_product(product.p_id, amount)
+            break
+
+        except ValueError as e:
+            print(e)
+
+        except InsufficientStockError as e:
+            print(e)
+
+    print("Product sold successfully.")
 
 
 def search_products():
-    ...
+    name = input("Name of the product: ")
+
+    result = inventory_service.search_product(name)
+
+    for item in result:
+        print(f"{item}")
 
 
 def show_all_products():
-    ...
+    products = inventory_service.get_all_products()
+
+    for product in products.values():
+        print(product)
 
 
 def show_categories():
-    ...
+    categories = inventory_service.get_all_categories()
+
+    for category in categories.values():
+        print(category)
 
 
 def show_suppliers():
-    ...
+    suppliers = inventory_service.get_all_suppliers()
+
+    for supplier in suppliers.values():
+        print(f"{supplier}")
 
 
 def show_statistics():
-    ...
+    print(f"Products: {inventory_service.total_products()}\n")
+
+    print(f"Categories: {len(inventory_service.get_all_categories())}\n")
+
+    print(f"Suppliers: {len(inventory_service.get_all_suppliers())}\n")
+
+    print(f"Total Items in Stock: {inventory_service.total_stock()}\n")
+
+    low_stock = inventory_service.low_stock_products()
+
+    print(f"Products with Low Stock:")
+
+    for product in low_stock:
+        print(f"{product.p_id}: {product.name}")
 
 
 def run():
-    ...
+    while True:
+        show_menu()
+
+        try:
+            choice = int(input("Which option(number)?: "))
+        except ValueError:
+            print("Please enter a valid number.")
+            continue
+
+        if choice not in range(13):
+            print("Invalid option.")
+            continue
+
+        if choice == 1:
+            add_product()
+        elif choice == 2:
+            update_product()
+        elif choice == 3:
+            delete_product()
+        elif choice == 4:
+            add_category()
+        elif choice == 5:
+            add_supplier()
+        elif choice == 6:
+            restock_product()
+        elif choice == 7:
+            sell_product()
+        elif choice == 8:
+            search_products()
+        elif choice == 9:
+            show_all_products()
+        elif choice == 10:
+            show_categories()
+        elif choice == 11:
+            show_suppliers()
+        elif choice == 12:
+            show_statistics()
+        elif choice == 0:
+            break
