@@ -40,10 +40,10 @@ class Product:
         return self.quantity > 0
 
     def __str__(self):
-        return f"""Name: {self.name}
-        Price: {self.price}
-        Description: {self.description}
-        Quantity: {self.quantity}
-        Category: {self.category}
-        Supplier: {self.supplier}
-"""
+        return f"""    Name: {self.name}
+    Price: {self.price}
+    Description: {self.description}
+    Quantity: {self.quantity}
+    Category: {self.category}
+    Supplier: {self.supplier}
+    """

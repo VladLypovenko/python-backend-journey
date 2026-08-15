@@ -9,6 +9,7 @@ class Category:
         self.name = name
 
     def __str__(self):
-        return f"""ID: {self.c_id}
-    Name: {self.name}
-"""
+        return f"""
+    ID:{self.c_id}
+    Name:{self.name}
+    """

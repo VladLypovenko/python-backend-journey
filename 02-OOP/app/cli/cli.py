@@ -463,7 +463,9 @@ def search_products():
 
     for item in result:
         print(f"{item}")
-
+    1
+    if not result:
+        print("Product not found.")
 
 def show_all_products():
     products = inventory_service.get_all_products()
