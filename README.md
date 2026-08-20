@@ -39,4 +39,4 @@ Coming soon.
 
 ## Progress
 
-Currently working on: **02 - OOP**
+Currently working on: **03 - SQLite**
