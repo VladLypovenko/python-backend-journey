@@ -185,5 +185,128 @@ def most_expensive_product_for_category():
         print(f"Product Name: {product[0]}")
         print(f"Price: {product[1]}")
 
+def average_price():
+    print("\nTenth Function: Avarage Price\n")
+    cursor.execute("""SELECT AVG(price) FROM products""")
+    average = cursor.fetchone()
+    print(f"Average Price: {average[0]}")
+
+def products_count():
+    print("\nEleventh Function: Product Count\n")
+    cursor.execute("""SELECT COUNT(*) FROM products""")
+    count = cursor.fetchone()
+    print(f"Total amount of products: {count[0]}")
+
+def higher_than_average():
+    print("\nTwelfth Function: Higher Than Average\n")
+    cursor.execute("""SELECT product_name,price FROM products WHERE price > (SELECT AVG(price) FROM products)""")
+    products = cursor.fetchall()
+
+
+    first = True
+    for product in products:
+        if not first:
+            print("-" * 20)
+        else:
+            print(f"Higher than average: \n")
+            first = False
+        print(f"Product Name: {product[0]}")
+        print(f"Price: {product[1]}")
+
+def products_above_category_average():
+    print("Products above category average")
+    category = input("Enter Category Name: ")
+    cursor.execute("""SELECT product_name,price,category_name FROM products AS p
+                      INNER JOIN categories 
+                      ON p.category_id = categories.category_id
+                      WHERE category_name = ? AND price > (SELECT AVG(price) FROM products AS subp
+                                                            WHERE p.category_id = subp.category_id)""",(category,))
+    products = cursor.fetchall()
+
+    cursor.execute("""SELECT AVG(price) FROM products 
+                      INNER JOIN categories 
+                      ON products.category_id = categories.category_id
+                      WHERE category_name = ?""",(category,))
+    average = cursor.fetchone()
+    first = True
+    for product in products:
+        if not first:
+            print("-" * 20)
+        else:
+            print(f"Higher than average: \n")
+            first = False
+        print(f"\nAverage Price: {average[0]}\n")
+        print(f"Product Name: {product[0]}")
+        print(f"Price: {product[1]}")
+        print(f"Category Name: {product[2]}")
+
+def second_expensive_product():
+    print("\nSecond Expensive Product\n")
+    cursor.execute("""SELECT product_name, price
+        FROM products
+        ORDER BY price DESC
+        LIMIT 1 OFFSET 1""")
+    product = cursor.fetchone()
+    print(f"Product Name: {product[0]}")
+    print(f"Price: {product[1]}")
+
+def expensive_product_of_each_category():
+    print("\nexpensive product of each category\n")
+    cursor.execute("""SELECT product_name, category_name, price
+    FROM (
+    SELECT 
+        p.product_name,
+        c.category_name,
+        p.price,
+        ROW_NUMBER() OVER (
+            PARTITION BY p.category_id
+            ORDER BY p.price DESC
+        ) AS row_num
+    FROM products AS p
+    INNER JOIN categories AS c
+        ON p.category_id = c.category_id
+    )
+    WHERE row_num <= 3;
+    """)
+    result = cursor.fetchall()
+    print(result)
+
+def  suppliers_with_higher_avarage_than_the_overall_average():
+    print("\nSuppliers with higher avarage than the overall average\n")
+    cursor.execute("""SELECT company_name,
+                      AVG(price) AS avg_price,
+                      COUNT(*) AS prod_count
+                      FROM products
+                      INNER JOIN suppliers ON suppliers.supplier_id = products.supplier_id
+                      GROUP BY suppliers.supplier_id, suppliers.company_name
+                      HAVING AVG(price) > (SELECT AVG(price) FROM products)
+                      ORDER BY avg_price DESC""")
+    result = cursor.fetchall()
+    print(f"Company: {result[0][0]}")
+    print(f"Avarage Price: {result[0][1]}")
+    print(f"Prod Count: {result[0][2]}")
+
+
+def easiest_windows():
+    print("\nEasiest Windows\n")
+    cursor.execute("""SELECT product_name,
+                supplier_id,
+                price,
+                ROW_NUMBER() OVER(
+                PARTITION BY supplier_id
+                ORDER BY price DESC)
+                FROM products AS p""")
+    result = cursor.fetchall()
+    for row in result:
+        print(f"Product Name: {row[0]}")
+        print(f"Supplier ID: {row[1]}")
+        print(f"Price: {row[2]}")
+        print(f"Row Number: {row[3]}")
+        print()
+
+easiest_windows()
+
+
+
 
 
