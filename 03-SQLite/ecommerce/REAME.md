@@ -60,6 +60,4 @@ The project is used to practice:
 
 ## Project Status
 
-Currently working on basic SELECT queries and JOINs.
-
-More advanced SQL queries will be added as the project progresses.
+Currently working on CTEs and Window functions.
