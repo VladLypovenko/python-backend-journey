@@ -2,6 +2,8 @@ from fastapi import FastAPI
 
 from fastapi.exceptions import HTTPException
 
+from models import BookCreate, BookUpdate,BookResponse
+
 app = FastAPI()
 
 from database import *
@@ -14,7 +16,7 @@ async def root():
 def get_books():
     return get_all_books()
 
-@app.get("/books/{book_id}")
+@app.get("/books/{book_id}", response_model=BookResponse)
 def get_book_id(book_id: int):
     book = get_a_book_by_id(book_id)
 
@@ -26,7 +28,7 @@ def get_book_id(book_id: int):
 
     return book
 
-@app.get("/books/title/{book_title}")
+@app.get("/books/title/{book_title}", response_model=BookResponse)
 def get_book_title(book_title: str):
     book = get_a_book_by_title(book_title)
 
@@ -38,12 +40,12 @@ def get_book_title(book_title: str):
 
     return book
 
-@app.post("/books")
-def create_book(book: Book):
+@app.post("/books", response_model=BookResponse)
+def create_book(book: BookCreate):
     return create_a_book(book.title, book.author)
 
-@app.put("/books/{book_id}")
-def update_book(book_id: int, book: Book):
+@app.put("/books/{book_id}", response_model=BookResponse)
+def update_book(book_id: int, book: BookUpdate):
     book = update_a_book(book_id, book.title, book.author)
 
     if book is None:
@@ -56,13 +58,13 @@ def update_book(book_id: int, book: Book):
 
 @app.delete("/books/{book_id}")
 def delete_book(book_id: int):
-    book = delete_a_book(book_id)
+    result = delete_a_book(book_id)
 
-    if book is None:
+    if result is None:
         raise HTTPException(
             status_code=404,
             detail="Book not found"
         )
 
-    return book
+    return result
 

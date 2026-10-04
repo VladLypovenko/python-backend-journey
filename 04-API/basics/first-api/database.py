@@ -1,6 +1,6 @@
 import sqlite3
 
-from models import Book
+from models import BookCreate
 
 from datetime import datetime
 
@@ -21,12 +21,26 @@ conn.commit()
 def get_a_book_by_id(book_id):
     cur.execute("""SELECT * FROM books WHERE id = ?""", (book_id,))
     result = cur.fetchone()
-    return result
+    book = {
+    "id": result[0],
+    "title": result[1],
+    "author": result[2],
+    "created_at": result[3],
+    "updated_at": result[4]
+    }
+    return book
 
 def get_a_book_by_title(title):
     cur.execute("""SELECT * FROM books WHERE title = ?""", (title,))
     result = cur.fetchone()
-    return result
+    book = {
+        "id": result[0],
+        "title": result[1],
+        "author": result[2],
+        "created_at": result[3],
+        "updated_at": result[4]
+    }
+    return book
 
 def get_all_books():
     cur.execute("""SELECT * FROM books""")
@@ -34,14 +48,16 @@ def get_all_books():
     return result
 
 def create_a_book(title, author):
-    new_book = Book(title=title, author=author,
-                    created_at=datetime.now(),
-                    updated_at=datetime.now())
+    new_book = BookCreate(title=title, author=author)
 
     cur.execute("""INSERT INTO books (title, author, created_at , updated_at ) VALUES (?, ?, ?, ?)""",
-                (new_book.title, new_book.author, new_book.created_at, new_book.updated_at))
+                (new_book.title, new_book.author, datetime.now(), datetime.now()))
 
     conn.commit()
+
+    book_id = cur.lastrowid
+
+    return get_a_book_by_id(book_id)
 
 def update_a_book(book_id, new_title, new_author):
     cur.execute("""SELECT * FROM books WHERE id = ?""", (book_id,))
@@ -53,7 +69,14 @@ def update_a_book(book_id, new_title, new_author):
         cur.execute("""UPDATE books SET title = ?, author = ?, updated_at = ? WHERE id = ?""",
                     (new_title,new_author,datetime.now(),book_id,))
         conn.commit()
-        return {"message: " f"{result[0]} is updated successfully"}
+        new_book = {
+        "id": result[0],
+        "title": result[1],
+        "author": result[2],
+        "created_at": result[3],
+        "updated_at": result[4]
+        }
+        return new_book
 
     return None
 
