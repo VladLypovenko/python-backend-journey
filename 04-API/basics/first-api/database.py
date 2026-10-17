@@ -21,6 +21,8 @@ conn.commit()
 def get_a_book_by_id(book_id):
     cur.execute("""SELECT * FROM books WHERE id = ?""", (book_id,))
     result = cur.fetchone()
+    if result is None:
+        return None
     book = {
     "id": result[0],
     "title": result[1],
@@ -33,6 +35,8 @@ def get_a_book_by_id(book_id):
 def get_a_book_by_title(title):
     cur.execute("""SELECT * FROM books WHERE title = ?""", (title,))
     result = cur.fetchone()
+    if result is None:
+        return None
     book = {
         "id": result[0],
         "title": result[1],
@@ -44,7 +48,17 @@ def get_a_book_by_title(title):
 
 def get_all_books():
     cur.execute("""SELECT * FROM books""")
-    result = cur.fetchall()
+    books = cur.fetchall()
+    if books is None:
+        return None
+    result = []
+    for book in books:
+        result.append({"id": book[0],
+                    "title": book[1],
+                    "author": book[2],
+                    "created_at": book[3],
+                    "updated_at": book[4]
+                    })
     return result
 
 def create_a_book(title, author):
